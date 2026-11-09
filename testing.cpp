@@ -133,19 +133,21 @@ int maze_error_check(vector<vector<char>> maze) {
 	return 0;
 }
 
-int maze_display(char arr[20][20], int len = 20) {
+int maze_display(Player& player, char arr[20][20]) {
 	cout << endl << endl;
-	for (int i = 0; i < len; ++i) {
-		for (int j = 0; j < len; ++j) {
+	for (int i = 0; i < 20; ++i) {
+		for (int j = 0; j < 20; ++j) {
 			cout << arr[i][j];
 		}
 		cout << endl;
 	}
+	cout << "Lives: " << player.get_lives() << endl;
+	cout << "Score: " << player.get_score() << endl;
 	cout << endl << endl;
 	return 0;
 }
 
-bool move_player(Player player, char maze[20][20]) {
+bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone_y) {
 	// input move 
 	cout << "Please enter your move: ";
 	char move;
@@ -162,36 +164,89 @@ bool move_player(Player player, char maze[20][20]) {
 
 	// UP
 	if (move == 'w') {
-		if (maze[y - 1][x] != '#') { 
-			maze[y][x] = '.'; // remove P from current position
-			maze[y - 1][x] = 'P'; // move P to new position
-			player.set_y(y - 1); // update player position
+		char new_pos = maze[y - 1][x];
+		if (new_pos != '#') {
+			if (new_pos == 'T') {
+				player.add_score();
+			}
+			if (new_pos == 'E') {
+				player.sub_lives();
+				maze[y][x] = '.'; // remove P from current position
+				maze[safezone_y][safezone_x] = 'P'; // move P to starter position
+				player.set_y(safezone_y); // update player position
+				player.set_x(safezone_x);
+			}
+			else {
+				maze[y][x] = '.'; // remove P from current position
+				maze[y - 1][x] = 'P'; // move P to new position
+				player.set_y(y - 1); // update player position
+			}
+		} 
 	}
-} 
+
 	// LEFT
 	else if (move == 'a') {
-		if (maze[y][x - 1] != '#') {
-		maze[y][x] = '.'; // remove P from current position
-		maze[y][x - 1] = 'P'; // move P to new position
-		player.set_x(x - 1); // update player position
+		char new_pos = maze[y][x - 1];
+		if (new_pos != '#') {
+			if (new_pos == 'T') {
+				player.add_score();
+			}
+			if (new_pos == 'E') {
+				player.sub_lives();
+				maze[y][x] = '.'; // remove P from current position
+				maze[safezone_y][safezone_x] = 'P'; // move P to starter position
+				player.set_y(safezone_y); // update player position
+				player.set_x(safezone_x);
+			}
+			else { 
+				maze[y][x] = '.'; // remove P from current position
+				maze[y][x - 1] = 'P'; // move P to new position
+				player.set_x(x - 1); // update player position
+			} 
+		}
 	}
-}
 	// DOWN
 	else if (move == 's') {
-		if (maze[y + 1][x] != '#') {
-		maze[y][x] = '.'; // remove P from current position
-		maze[y + 1][x] = 'P'; // move P to new position
-		player.set_y(y + 1); // update player position
-	}
-} 
+		char new_pos = maze[y + 1][x];
+		if (new_pos != '#') {
+			if (new_pos == 'T') {
+				player.add_score();
+			}
+			if (new_pos == 'E') {
+				player.sub_lives();
+				maze[y][x] = '.'; // remove P from current position
+				maze[safezone_y][safezone_x] = 'P'; // move P to starter position
+				player.set_y(safezone_y); // update player position
+				player.set_x(safezone_x);
+			}
+			else {
+				maze[y][x] = '.'; // remove P from current position
+				maze[y + 1][x] = 'P'; // move P to new position
+				player.set_y(y + 1); // update player position
+			}
+		}
+	} 
 	// RIGHT
 	else if (move == 'd') {
-		if (maze[y][x + 1] != '#'){
-		maze[y][x] = '.'; // remove P from current position
-		maze[y][x + 1] = 'P'; // move P to new position
-		player.set_x(x + 1); // update player position
+		char new_pos = maze[y][x + 1];
+		if (new_pos != '#'){
+			if (new_pos == 'T') {
+				player.add_score();
+			}
+			if (new_pos == 'E') {
+				player.sub_lives();
+				maze[y][x] = '.'; // remove P from current position
+				maze[safezone_y][safezone_x] = 'P'; // move P to starter position
+				player.set_y(safezone_y); // update player position
+				player.set_x(safezone_x);
+			}
+			else {
+				maze[y][x] = '.'; // remove P from current position
+				maze[y][x + 1] = 'P'; // move P to new position
+				player.set_x(x + 1); // update player position
+			} 
+		}
 	}
-}
 
 	else {
 		cerr << "Error: please input a valid move. W (up), A (left), S (down) or D (right). Or Q to quit." << endl;
@@ -270,12 +325,14 @@ int main() {
 	// Find P
 	Player player;
 	player.find_p(maze_arr);
+	int safezone_x = player.get_x();
+	int safezone_y = player.get_y();
 
 	while (true) {
 
-	maze_display(maze_arr);
+	maze_display(player, maze_arr);
 
-	if (!move_player(player, maze_arr)) { 
+	if (!move_player(player, maze_arr, safezone_x, safezone_y)) { 
 		break;
 	}
 	
