@@ -145,6 +145,59 @@ int maze_display(char arr[20][20], int len = 20) {
 	return 0;
 }
 
+bool move_player(Player player, char maze[20][20]) {
+	// input move 
+	cout << "Please enter your move: ";
+	char move;
+	cin >> move;
+	move = tolower(move);
+
+	if (move == 'q') {
+		clog << "Quitting game..." << endl;
+		return false;
+	}
+
+	int x = player.get_x();
+	int y = player.get_y();
+
+	// UP
+	if (move == 'w') {
+		if (maze[y - 1][x] != '#') { 
+			maze[y][x] = '.'; // remove P from current position
+			maze[y - 1][x] = 'P'; // move P to new position
+			player.set_y(y - 1); // update player position
+	}
+} 
+	// LEFT
+	else if (move == 'a') {
+		if (maze[y][x - 1] != '#') {
+		maze[y][x] = '.'; // remove P from current position
+		maze[y][x - 1] = 'P'; // move P to new position
+		player.set_x(x - 1); // update player position
+	}
+}
+	// DOWN
+	else if (move == 's') {
+		if (maze[y + 1][x] != '#') {
+		maze[y][x] = '.'; // remove P from current position
+		maze[y + 1][x] = 'P'; // move P to new position
+		player.set_y(y + 1); // update player position
+	}
+} 
+	// RIGHT
+	else if (move == 'd') {
+		if (maze[y][x + 1] != '#'){
+		maze[y][x] = '.'; // remove P from current position
+		maze[y][x + 1] = 'P'; // move P to new position
+		player.set_x(x + 1); // update player position
+	}
+}
+
+	else {
+		cerr << "Error: please input a valid move. W (up), A (left), S (down) or D (right). Or Q to quit." << endl;
+	}
+return true;
+}
 
 
 int main() {
@@ -222,51 +275,11 @@ int main() {
 
 	maze_display(maze_arr);
 
-	// input move 
-	cout << "Please enter your move: ";
-	char move;
-	cin >> move;
-	move = tolower(move);
-
-	if (move != 'w' && move != 'a' && move != 's' && move != 'd') {
-		cerr << "Error: please input a valid move. W (up), A (left), S (down) or D (right).";
-	    return 1;
+	if (!move_player(player, maze_arr)) { 
+		break;
 	}
-
-	// UP
-	if (move == 'w') { 
-		int x = player.get_x();
-		int y = player.get_y();
-		maze_arr[y][x] = '.'; // remove P from current position
-		maze_arr[y - 1][x] = 'P'; // move P to new position
-		player.set_y(y - 1); // update player position
-	}
-	// LEFT
-	if (move == 'a') {
-		int x = player.get_x();
-		int y = player.get_y();
-		maze_arr[y][x] = '.'; // remove P from current position
-		maze_arr[y][x - 1] = 'P'; // move P to new position
-		player.set_x(x - 1); // update player position
-	}
-	// DOWN
-	if (move == 's') {
-		int x = player.get_x();
-		int y = player.get_y();
-		maze_arr[y][x] = '.'; // remove P from current position
-		maze_arr[y + 1][x] = 'P'; // move P to new position
-		player.set_y(y + 1); // update player position
-	}
-	// RIGHT
-	if (move == 'd') {
-		int x = player.get_x();
-		int y = player.get_y();
-		maze_arr[y][x] = '.'; // remove P from current position
-		maze_arr[y][x + 1] = 'P'; // move P to new position
-		player.set_x(x + 1); // update player position
-	}
-	} 
-
+	
+} 
 
 	cout << "Check!";
 
