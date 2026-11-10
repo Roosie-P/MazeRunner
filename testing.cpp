@@ -11,12 +11,14 @@
 #include <cctype> // lower char
 
 #include <direct.h> // getcwd
+#include <bits/stdc++.h> // enemy direction
 #include <string>
 #include <vector> // temp maze
 #include <windows.h> // sleep
 #include <cstdlib> // clear console
 
 #include "entities.h" // import entities
+
 
 using namespace std;
 
@@ -252,7 +254,7 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 		cerr << "Error: please input a valid move. W (up), A (left), S (down) or D (right). Or Q to quit." << endl;
 	}
 return true;
-}
+};
 
 
 int main() {
@@ -327,6 +329,19 @@ int main() {
 	player.find_p(maze_arr);
 	int safezone_x = player.get_x();
 	int safezone_y = player.get_y();
+	
+	// Initialize enemies
+	Enemy enemy_1, enemy_2, enemy_3;
+	vector<int> locs = enemy_1.find_all_enemies(maze_arr);
+	enemy_1.set_x(locs[0]);
+	enemy_1.set_y(locs[1]);
+	enemy_2.set_x(locs[2]);
+	enemy_2.set_y(locs[3]);
+	enemy_3.set_x(locs[4]);
+	enemy_3.set_y(locs[5]);
+
+	srand(time(0));
+
 
 	while (true) {
 
@@ -335,6 +350,10 @@ int main() {
 	if (!move_player(player, maze_arr, safezone_x, safezone_y)) { 
 		break;
 	}
+
+	enemy_1.move_enemy(maze_arr, safezone_x, safezone_y);
+	enemy_2.move_enemy(maze_arr, safezone_x, safezone_y);
+	enemy_3.move_enemy(maze_arr, safezone_x, safezone_y);
 	
 } 
 
