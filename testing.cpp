@@ -143,13 +143,16 @@ int maze_display(Player& player, char arr[20][20]) {
 		}
 		cout << endl;
 	}
+	cout << "Turn: " << player.get_turn() << endl;
 	cout << "Lives: " << player.get_lives() << endl;
 	cout << "Score: " << player.get_score() << endl;
+	cout << "Treasure collected: " << player.get_treasure_collected() << endl;
+	cout << "Treasure remaining: " << player.get_treasure_remaining() << endl;
 	cout << endl << endl;
 	return 0;
 }
 
-bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone_y) {
+bool move_player(Player& player, Maze& maze_class, char maze[20][20], int safezone_x, int safezone_y) {
 	// input move 
 	cout << "Please enter your move: ";
 	char move;
@@ -170,7 +173,17 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 		if (new_pos != '#') {
 			if (new_pos == 'T') {
 				player.add_score();
+				player.add_treasure_collected();
+				player.sub_treasure_remaining();
 			}
+			else if (new_pos == 'X') {
+				if (player.get_treasure_remaining() == 0) {
+				cout << "You've won!" << endl;
+				return false;
+				}
+				cout << "You have not collected all treasures yet!" << endl;
+			}
+
 			if (new_pos == 'E') {
 				player.sub_lives();
 				maze[y][x] = '.'; // remove P from current position
@@ -179,12 +192,17 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 				player.set_x(safezone_x);
 			}
 			else {
-				maze[y][x] = '.'; // remove P from current position
+				if (player.get_x() == maze_class.get_x_exit() && player.get_y() == maze_class.get_y_exit()) {
+					maze[y][x] = 'X'; // Restore exit
+				}
+				else {
+					maze[y][x] = '.'; // remove P from current position
+				} 
 				maze[y - 1][x] = 'P'; // move P to new position
 				player.set_y(y - 1); // update player position
-			}
 		} 
 	}
+}
 
 	// LEFT
 	else if (move == 'a') {
@@ -192,7 +210,17 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 		if (new_pos != '#') {
 			if (new_pos == 'T') {
 				player.add_score();
+				player.add_treasure_collected();
+				player.sub_treasure_remaining();
 			}
+			else if (new_pos == 'X') {
+				if (player.get_treasure_remaining() == 0) {
+				cout << "You've won!" << endl;
+				return false;
+				}
+				cout << "You have not collected all treasures yet!" << endl;
+			}
+
 			if (new_pos == 'E') {
 				player.sub_lives();
 				maze[y][x] = '.'; // remove P from current position
@@ -200,11 +228,16 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 				player.set_y(safezone_y); // update player position
 				player.set_x(safezone_x);
 			}
-			else { 
-				maze[y][x] = '.'; // remove P from current position
+			else {
+				if (player.get_x() == maze_class.get_x_exit() && player.get_y() == maze_class.get_y_exit()) {
+					maze[y][x] = 'X'; // Restore exit
+				}
+				else {
+					maze[y][x] = '.'; // remove P from current position
+				} 
 				maze[y][x - 1] = 'P'; // move P to new position
 				player.set_x(x - 1); // update player position
-			} 
+		} 
 		}
 	}
 	// DOWN
@@ -213,7 +246,17 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 		if (new_pos != '#') {
 			if (new_pos == 'T') {
 				player.add_score();
+				player.add_treasure_collected();
+				player.sub_treasure_remaining();
 			}
+			else if (new_pos == 'X') {
+				if (player.get_treasure_remaining() == 0) {
+				cout << "You've won!" << endl;
+				return false;
+				}
+				cout << "You have not collected all treasures yet!" << endl;
+			}
+
 			if (new_pos == 'E') {
 				player.sub_lives();
 				maze[y][x] = '.'; // remove P from current position
@@ -222,10 +265,15 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 				player.set_x(safezone_x);
 			}
 			else {
-				maze[y][x] = '.'; // remove P from current position
+				if (player.get_x() == maze_class.get_x_exit() && player.get_y() == maze_class.get_y_exit()) {
+					maze[y][x] = 'X'; // Restore exit
+				}
+				else {
+					maze[y][x] = '.'; // remove P from current position
+				} 
 				maze[y + 1][x] = 'P'; // move P to new position
 				player.set_y(y + 1); // update player position
-			}
+		} 
 		}
 	} 
 	// RIGHT
@@ -234,7 +282,17 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 		if (new_pos != '#'){
 			if (new_pos == 'T') {
 				player.add_score();
+				player.add_treasure_collected();
+				player.sub_treasure_remaining();
 			}
+			else if (new_pos == 'X') {
+				if (player.get_treasure_remaining() == 0) {
+				cout << "You've won!" << endl;
+				return false;
+				}
+				cout << "You have not collected all treasures yet!" << endl;
+			}
+
 			if (new_pos == 'E') {
 				player.sub_lives();
 				maze[y][x] = '.'; // remove P from current position
@@ -243,22 +301,30 @@ bool move_player(Player& player, char maze[20][20], int safezone_x, int safezone
 				player.set_x(safezone_x);
 			}
 			else {
-				maze[y][x] = '.'; // remove P from current position
+				if (player.get_x() == maze_class.get_x_exit() && player.get_y() == maze_class.get_y_exit()) {
+					maze[y][x] = 'X'; // Restore exit
+				}
+				else {
+					maze[y][x] = '.'; // remove P from current position
+				} 
 				maze[y][x + 1] = 'P'; // move P to new position
 				player.set_x(x + 1); // update player position
-			} 
+		} 
 		}
 	}
 
 	else {
 		cerr << "Error: please input a valid move. W (up), A (left), S (down) or D (right). Or Q to quit." << endl;
 	}
+
+player.add_turn();
 return true;
 };
 
 
 int main() {
 	
+	// change directory + load maze
 	if (change_cwd() != 0) {
 	    return 1;
 	}
@@ -326,6 +392,8 @@ int main() {
 
 	// Find P
 	Player player;
+	Maze maze;
+	maze.find_x(maze_arr);
 	player.find_p(maze_arr);
 	int safezone_x = player.get_x();
 	int safezone_y = player.get_y();
@@ -347,7 +415,7 @@ int main() {
 
 	maze_display(player, maze_arr);
 
-	if (!move_player(player, maze_arr, safezone_x, safezone_y)) { 
+	if (!move_player(player, maze, maze_arr, safezone_x, safezone_y)) { 
 		break;
 	}
 
@@ -355,6 +423,10 @@ int main() {
 	enemy_2.move_enemy(maze_arr, safezone_x, safezone_y);
 	enemy_3.move_enemy(maze_arr, safezone_x, safezone_y);
 	
+	if (player.get_lives() == 0) {
+		cout << "You lose!" << endl;
+		break;
+	}
 } 
 
 	cout << "Check!";

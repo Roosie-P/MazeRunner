@@ -6,12 +6,40 @@
 
 using namespace std;
 
+class Maze {
+    private:
+        int x_exit;
+        int y_exit;
+    public:
+        void find_x(char maze[20][20]) {
+            for (int i = 0; i < 20; i++) {
+                for (int j = 0; j < 20; j++) {
+                    char cur = maze[i][j];
+                    if (cur == 'X') {
+                        x_exit = j;
+                        y_exit = i;
+                    }
+                }
+            }
+        }
+        int get_x_exit() {
+            return x_exit;
+        }
+        int get_y_exit() {
+            return y_exit;
+}
+};
+
+
 class Player {
     private:
         int x;
         int y;
         int lives = 3;
         int score = 0;
+        int turns = 0;
+        int treasure_collected = 0;
+        int treasure_remaining = 5;
     public:
         int get_x() {
             return x;
@@ -43,11 +71,29 @@ class Player {
         int get_score() {
             return score;
         }
+        int get_turn() {
+            return turns;
+        }
+        int get_treasure_collected() {
+            return treasure_collected;
+        }
+        int get_treasure_remaining() {
+            return treasure_remaining;
+        }
         void sub_lives() {
             lives -= 1;
         }
         void add_score() {
             score += 10;
+        }
+        void add_turn() {
+            turns += 1;
+        }
+        void add_treasure_collected() {
+            treasure_collected += 1;
+        }
+        void sub_treasure_remaining() {
+            treasure_remaining -= 1;
         }
 
 };
